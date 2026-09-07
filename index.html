@@ -4,20 +4,61 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
-<title>DoReMi v2</title>
+<title>DoReMi v3</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main class="app">
-<header><h1>DoReMi</h1><p class="subtitle">Pitch trainer prototype · v2</p></header>
+<header><h1>DoReMi</h1><p class="subtitle">Pitch + interval trainer · v3</p></header>
 
 <section class="controls">
 <button id="startButton">Start microphone</button>
 <button id="stopButton" disabled>Stop</button>
 </section>
 
-<section class="instrument">
+<nav class="view-tabs" aria-label="Display mode">
+<button class="tab active" id="dialTab">Pitch dial</button>
+<button class="tab" id="exerciseTab">Exercise</button>
+</nav>
+
+<section class="instrument" id="dialView">
 <canvas id="pitchCanvas" aria-label="Circular pitch-class display"></canvas>
+</section>
+
+<section class="exercise-view hidden" id="exerciseView">
+  <div class="exercise-settings">
+    <label>BPM <input id="bpmInput" type="number" min="40" max="200" step="1" value="60"></label>
+    <div class="target-editor">
+      <span>Target intervals (semitones)</span>
+      <div class="interval-inputs">
+        <label>1 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="0"></label>
+        <label>2 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="4"></label>
+        <label>3 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="7"></label>
+        <label>4 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="12"></label>
+      </div>
+    </div>
+    <label class="sound-toggle"><input id="metronomeToggle" type="checkbox" checked> Metronome click</label>
+    <button id="startExerciseButton" disabled>Start 4 attempts</button>
+  </div>
+
+  <div class="exercise-status-row">
+    <span id="attemptLabel">Ready</span>
+    <span id="beatLabel">—</span>
+  </div>
+  <div class="beat-lights" aria-label="Beat indicators">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="trace-wrap">
+    <canvas id="traceCanvas" aria-label="Pitch versus musical time"></canvas>
+  </div>
+
+  <div class="score-grid" id="scoreGrid">
+    <div><strong>Note 1</strong><span>reference</span></div>
+    <div><strong>Note 2</strong><span>—</span></div>
+    <div><strong>Note 3</strong><span>—</span></div>
+    <div><strong>Note 4</strong><span>—</span></div>
+  </div>
 </section>
 
 <section class="readout">
@@ -32,8 +73,9 @@
 </section>
 
 <section class="help">
-<p><strong>Display:</strong> octave is shown in the note readout, while every octave wraps onto the same 12-note circle.</p>
-<p class="small">v2 uses a YIN-style fundamental detector plus a short stability filter to reject isolated octave errors.</p>
+<p><strong>Pitch dial:</strong> every octave wraps onto the same 12-note circle; the readout shows the actual octave.</p>
+<p><strong>Exercise:</strong> a four-beat count-in precedes each attempt. Match the four quarter-note intervals; earlier attempts remain dimly overlaid.</p>
+<p class="small">Pitch is scored from the stable middle of each beat. Note 1 establishes the reference pitch, so later notes are measured as intervals in cents.</p>
 </section>
 </main>
 <script src="app.js"></script>
