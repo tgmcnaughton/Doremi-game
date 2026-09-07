@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <title>DoReMi Pitch Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>DoReMi</h1>
+      <p class="subtitle">Sing or whistle and watch your pitch.</p>
+    </header>
+
+    <section class="controls">
+      <button id="startButton">Start microphone</button>
+      <button id="stopButton" disabled>Stop</button>
+    </section>
+
+    <section class="readout">
+      <div class="note" id="noteName">—</div>
+      <div class="frequency"><span id="frequency">—</span> Hz</div>
+      <div class="cents" id="cents">— cents</div>
+      <div class="status" id="status">Microphone is off.</div>
+    </section>
+
+    <section class="pitch-panel">
+      <canvas id="pitchCanvas"></canvas>
+    </section>
+
+    <section class="help">
+      <p><strong>Tip:</strong> whistle or sing a steady note. The dot moves higher for higher pitch and lower for lower pitch.</p>
+      <p class="small">Best results: use headphones if the phone is also playing sound.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
