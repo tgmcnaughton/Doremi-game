@@ -1,36 +1,21 @@
-# DoReMi Pitch Prototype
+# DoReMi v2
 
-A tiny dependency-free browser prototype for detecting sung or whistled pitch.
+Changes:
+- YIN-style fundamental pitch detection
+- confidence estimate and low-confidence rejection
+- octave-independent circular pitch display
+- actual note/octave, frequency and cents readout
+- whistling range extended to 2200 Hz
+- short persistence filter to reject isolated octave errors
 
-## Files
+## Windowing strategy
 
-- `index.html`
-- `style.css`
-- `app.js`
+The analyser uses a 4096-sample window. At 48 kHz that spans about 85 ms.
+A new analysis is attempted every 45 ms, so consecutive windows overlap.
 
-## Important: microphone security
+This separates analysis-window length from update rate:
+- longer windows provide more periodic cycles and improve low-note stability
+- shorter hop intervals keep the UI responsive
+- large pitch jumps must persist for two analyses before being accepted
 
-Browsers normally allow microphone access only from a **secure context**:
-
-- `https://...`
-- or `localhost`
-
-Opening `index.html` directly as a `file://` URL may not allow microphone access.
-
-## Easiest phone workflow
-
-1. Put these files in a GitHub repository.
-2. Enable GitHub Pages for the repository.
-3. Open the resulting HTTPS page in Chrome on the Samsung phone.
-4. Tap **Start microphone** and grant permission.
-
-## First prototype features
-
-- microphone input
-- pitch detection via autocorrelation
-- frequency in Hz
-- nearest musical note
-- cents sharp/flat
-- vertical pitch display from C3 to C6
-
-The next milestone is to add a scrolling target path and score how closely the live pitch follows it.
+This is intentionally tuned for musical training rather than ultra-fast pitch tracking.

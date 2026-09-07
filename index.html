@@ -1,41 +1,41 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111111" />
-  <title>DoReMi Pitch Prototype</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<title>DoReMi v2</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <header>
-      <h1>DoReMi</h1>
-      <p class="subtitle">Sing or whistle and watch your pitch.</p>
-    </header>
+<main class="app">
+<header><h1>DoReMi</h1><p class="subtitle">Pitch trainer prototype · v2</p></header>
 
-    <section class="controls">
-      <button id="startButton">Start microphone</button>
-      <button id="stopButton" disabled>Stop</button>
-    </section>
+<section class="controls">
+<button id="startButton">Start microphone</button>
+<button id="stopButton" disabled>Stop</button>
+</section>
 
-    <section class="readout">
-      <div class="note" id="noteName">—</div>
-      <div class="frequency"><span id="frequency">—</span> Hz</div>
-      <div class="cents" id="cents">— cents</div>
-      <div class="status" id="status">Microphone is off.</div>
-    </section>
+<section class="instrument">
+<canvas id="pitchCanvas" aria-label="Circular pitch-class display"></canvas>
+</section>
 
-    <section class="pitch-panel">
-      <canvas id="pitchCanvas"></canvas>
-    </section>
+<section class="readout">
+<div class="note" id="noteName">—</div>
+<div class="measurement"><span id="frequency">—</span> Hz <span class="separator">·</span> <span id="cents">— cents</span></div>
+<div class="confidence-row">
+<span>Confidence</span>
+<div class="confidence-track"><div class="confidence-fill" id="confidenceFill"></div></div>
+<span id="confidenceText">—</span>
+</div>
+<div class="status" id="status">Microphone is off.</div>
+</section>
 
-    <section class="help">
-      <p><strong>Tip:</strong> whistle or sing a steady note. The dot moves higher for higher pitch and lower for lower pitch.</p>
-      <p class="small">Best results: use headphones if the phone is also playing sound.</p>
-    </section>
-  </main>
-
-  <script src="app.js"></script>
+<section class="help">
+<p><strong>Display:</strong> octave is shown in the note readout, while every octave wraps onto the same 12-note circle.</p>
+<p class="small">v2 uses a YIN-style fundamental detector plus a short stability filter to reject isolated octave errors.</p>
+</section>
+</main>
+<script src="app.js"></script>
 </body>
 </html>
