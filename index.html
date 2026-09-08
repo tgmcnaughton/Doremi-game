@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
-<title>DoReMi Engine Lab v4</title>
+<title>DoReMi Engine Lab v5</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main class="app">
-<header><h1>DoReMi Engine Lab</h1><p class="subtitle">Focus-group pitch + timing validation · v4</p></header>
+<header><h1>DoReMi Engine Lab</h1><p class="subtitle">Stable-tail pitch + timing validation · v5</p></header>
 
 <section class="controls">
 <button id="startButton">Start microphone</button>
@@ -28,7 +28,7 @@
 <section class="exercise-view hidden" id="labView">
   <div class="lab-intro">
     <strong>Validation protocol</strong>
-    <span>Hear the 4-note target, then reproduce it after the count-in. The engine records raw and stabilized pitch evidence, scores pitch and timing independently, and asks whether the score felt fair.</span>
+    <span>Hear the 4-note target, then reproduce it after the count-in. v5 suppresses transition artifacts, measures pitch from the stable tail of each note, and gives real-time high / low / on-target guidance.</span>
   </div>
 
   <div class="exercise-settings">
@@ -60,6 +60,11 @@
   </div>
   <div class="beat-lights" aria-label="Beat indicators"><span></span><span></span><span></span><span></span></div>
 
+  <div id="pitchGuide" class="pitch-guide" data-state="muted" aria-live="polite">
+    <strong id="pitchGuideText">Pitch guide</strong>
+    <span id="pitchGuideCents"></span>
+  </div>
+
   <div class="score-summary">
     <div><span>Pitch</span><strong id="pitchScore">—</strong></div>
     <div><span>Timing</span><strong id="timingScore">—</strong></div>
@@ -71,9 +76,9 @@
 
   <div class="diagnostic-table-wrap">
     <table class="diagnostic-table">
-      <thead><tr><th>Note</th><th>Target</th><th>Pitch error</th><th>Timing</th><th>Coverage</th><th>Stability</th></tr></thead>
+      <thead><tr><th>Note</th><th>Target</th><th>Pitch error</th><th>Timing</th><th>Coverage</th><th>Stability</th><th>Tail frames</th></tr></thead>
       <tbody id="diagnosticBody">
-        <tr><td colspan="6">Run an attempt to see per-note measurements.</td></tr>
+        <tr><td colspan="7">Run an attempt to see per-note measurements.</td></tr>
       </tbody>
     </table>
   </div>
@@ -100,7 +105,7 @@
 </section>
 
 <section class="help">
-<p><strong>Engine Lab principle:</strong> measurement is objective; scoring is policy. Each attempt preserves raw pitch, stabilized pitch, confidence, timing and voiced coverage. Changing Relaxed → Virtuoso changes scoring tolerances, not the underlying measurements.</p>
+<p><strong>Engine Lab v5 principle:</strong> transitions are treated as high-risk evidence. Pitch precision is scored from the stable tail of each note; timing remains a separate measurement. The live color guide is coaching feedback, not scoring evidence.</p>
 <p class="small">For focus-group testing, use the same few phrases across singers, hummers and whistlers. After each attempt, rate whether the score felt fair, then copy the validation data for comparison.</p>
 </section>
 </main>
