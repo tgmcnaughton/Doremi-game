@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
-<title>DoReMi v3</title>
+<title>DoReMi Engine Lab v4</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main class="app">
-<header><h1>DoReMi</h1><p class="subtitle">Pitch + interval trainer · v3</p></header>
+<header><h1>DoReMi Engine Lab</h1><p class="subtitle">Focus-group pitch + timing validation · v4</p></header>
 
 <section class="controls">
 <button id="startButton">Start microphone</button>
@@ -18,64 +18,90 @@
 
 <nav class="view-tabs" aria-label="Display mode">
 <button class="tab active" id="dialTab">Pitch dial</button>
-<button class="tab" id="exerciseTab">Exercise</button>
+<button class="tab" id="labTab">Engine Lab</button>
 </nav>
 
 <section class="instrument" id="dialView">
 <canvas id="pitchCanvas" aria-label="Circular pitch-class display"></canvas>
 </section>
 
-<section class="exercise-view hidden" id="exerciseView">
+<section class="exercise-view hidden" id="labView">
+  <div class="lab-intro">
+    <strong>Validation protocol</strong>
+    <span>Hear the 4-note target, then reproduce it after the count-in. The engine records raw and stabilized pitch evidence, scores pitch and timing independently, and asks whether the score felt fair.</span>
+  </div>
+
   <div class="exercise-settings">
-    <label>BPM <input id="bpmInput" type="number" min="40" max="200" step="1" value="60"></label>
-    <div class="target-editor">
-      <span>Target intervals (semitones)</span>
-      <div class="interval-inputs">
-        <label>1 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="0"></label>
-        <label>2 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="4"></label>
-        <label>3 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="7"></label>
-        <label>4 <input class="intervalInput" type="number" min="-24" max="24" step="1" value="12"></label>
-      </div>
-    </div>
-    <label class="sound-toggle"><input id="metronomeToggle" type="checkbox" checked> Metronome click</label>
-    <button id="startExerciseButton" disabled>Start 4 attempts</button>
+    <label>Test phrase
+      <select id="phraseSelect">
+        <option value="step">Step up · 0, 2, 4, 5</option>
+        <option value="triad">Major triad · 0, 4, 7, 12</option>
+        <option value="leap">Leap test · 0, 7, 2, 9</option>
+        <option value="repeat">Repeated pitch · 0, 0, 0, 0</option>
+      </select>
+    </label>
+    <label>BPM <input id="bpmInput" type="number" min="40" max="160" step="1" value="72"></label>
+    <label>Scoring
+      <select id="difficultySelect">
+        <option value="relaxed">Relaxed</option>
+        <option value="standard" selected>Standard</option>
+        <option value="precise">Precise</option>
+        <option value="virtuoso">Virtuoso</option>
+      </select>
+    </label>
+    <label class="sound-toggle"><input id="metronomeToggle" type="checkbox" checked> Metronome</label>
+    <label class="sound-toggle"><input id="targetAudioToggle" type="checkbox" checked> Play target first</label>
+    <button id="startExerciseButton" disabled>Run validation attempt</button>
   </div>
 
   <div class="exercise-status-row">
     <span id="attemptLabel">Ready</span>
     <span id="beatLabel">—</span>
   </div>
-  <div class="beat-lights" aria-label="Beat indicators">
-    <span></span><span></span><span></span><span></span>
+  <div class="beat-lights" aria-label="Beat indicators"><span></span><span></span><span></span><span></span></div>
+
+  <div class="score-summary">
+    <div><span>Pitch</span><strong id="pitchScore">—</strong></div>
+    <div><span>Timing</span><strong id="timingScore">—</strong></div>
+    <div><span>Voiced</span><strong id="coverageScore">—</strong></div>
   </div>
 
-  <div class="trace-wrap">
-    <canvas id="traceCanvas" aria-label="Pitch versus musical time"></canvas>
+  <div class="trace-key"><span>solid = stabilized</span><span>dotted = raw</span><span>dashed = target</span></div>
+  <div class="trace-wrap"><canvas id="traceCanvas" aria-label="Pitch versus musical time"></canvas></div>
+
+  <div class="diagnostic-table-wrap">
+    <table class="diagnostic-table">
+      <thead><tr><th>Note</th><th>Target</th><th>Pitch error</th><th>Timing</th><th>Coverage</th><th>Stability</th></tr></thead>
+      <tbody id="diagnosticBody">
+        <tr><td colspan="6">Run an attempt to see per-note measurements.</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="score-grid" id="scoreGrid">
-    <div><strong>Note 1</strong><span>reference</span></div>
-    <div><strong>Note 2</strong><span>—</span></div>
-    <div><strong>Note 3</strong><span>—</span></div>
-    <div><strong>Note 4</strong><span>—</span></div>
-  </div>
+  <section class="fairness hidden" id="fairnessPanel">
+    <strong>Did this score feel fair?</strong>
+    <div class="fairness-buttons">
+      <button data-fairness="1">1<br><small>Very unfair</small></button>
+      <button data-fairness="2">2</button>
+      <button data-fairness="3">3<br><small>Neutral</small></button>
+      <button data-fairness="4">4</button>
+      <button data-fairness="5">5<br><small>Very fair</small></button>
+    </div>
+    <div class="feedback-status" id="feedbackStatus"></div>
+    <button id="exportButton" class="secondary">Copy validation data</button>
+  </section>
 </section>
 
 <section class="readout">
 <div class="note" id="noteName">—</div>
 <div class="measurement"><span id="frequency">—</span> Hz <span class="separator">·</span> <span id="cents">— cents</span></div>
-<div class="confidence-row">
-<span>Confidence</span>
-<div class="confidence-track"><div class="confidence-fill" id="confidenceFill"></div></div>
-<span id="confidenceText">—</span>
-</div>
+<div class="confidence-row"><span>Confidence</span><div class="confidence-track"><div class="confidence-fill" id="confidenceFill"></div></div><span id="confidenceText">—</span></div>
 <div class="status" id="status">Microphone is off.</div>
 </section>
 
 <section class="help">
-<p><strong>Pitch dial:</strong> every octave wraps onto the same 12-note circle; the readout shows the actual octave.</p>
-<p><strong>Exercise:</strong> a four-beat count-in precedes each attempt. Match the four quarter-note intervals; earlier attempts remain dimly overlaid.</p>
-<p class="small">Pitch is scored from the stable middle of each beat. Note 1 establishes the reference pitch, so later notes are measured as intervals in cents.</p>
+<p><strong>Engine Lab principle:</strong> measurement is objective; scoring is policy. Each attempt preserves raw pitch, stabilized pitch, confidence, timing and voiced coverage. Changing Relaxed → Virtuoso changes scoring tolerances, not the underlying measurements.</p>
+<p class="small">For focus-group testing, use the same few phrases across singers, hummers and whistlers. After each attempt, rate whether the score felt fair, then copy the validation data for comparison.</p>
 </section>
 </main>
 <script src="app.js"></script>
